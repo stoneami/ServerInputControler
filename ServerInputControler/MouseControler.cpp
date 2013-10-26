@@ -76,23 +76,47 @@ void MouseControler::Roll()
 
 }
 
-//void MouseControler::SendKey(short key)
-//{
-//	ZeroMemory(mKeyboard, sizeof(INPUT));
-//	mKeyboard[0].type = INPUT_KEYBOARD;
-//	mKeyboard[1].type = INPUT_KEYBOARD;
-//	mKeyboard[0].ki.wVk=mKeyboard[1].ki.wVk=0;
-//	mKeyboard[0].ki.wScan=mKeyboard[1].ki.wScan=key;
-//	mKeyboard[0].ki.dwFlags=KEYEVENTF_UNICODE;
-//	mKeyboard[1].ki.dwFlags=KEYEVENTF_UNICODE|KEYEVENTF_KEYUP;
-//	SendInput(2, mKeyboard, sizeof(INPUT));
-//}
-
 void MouseControler::HandleMouseEvent(char* actions, int size)
 {
 	if(actions == NULL || size < 1) return;
 
-	for(int i=0; i<size; i++)
+	if(size>3 && actions[0]=='#' && actions[1]=='#' && actions[2]=='#')//mouse move, like "###r10d33"
+	{
+		char* act = actions + 3;
+		int sz = size - 3;
+
+		char dxChar[5] = {0};//x step
+		char dyChar[5] = {0};//y step
+		int curDx = 0;//action: 'l' or 'r'
+		int curDy = -1;//action: 'u' or 'd'
+
+		for(int i=1,x=0,y=0; i<sz; i++)
+		{
+			if(curDy == -1)//data for dx
+			{
+				if(act[i]>='0' && act[i]<='9') dxChar[x++]=act[i];
+				else curDy = i;
+			}
+			else//data for dy
+			{
+				if(act[i]>='0' && act[i]<='9') dyChar[y++]=act[i];
+			}
+		}
+
+		int dx = atoi(dxChar);
+		int dy = atoi(dyChar);
+		//AfxMessageBox(Utils::getWChar(dxChar));
+		//AfxMessageBox(Utils::getWChar(dyChar));
+
+		if(act[curDx]=='l') dx = -dx;
+		if(act[curDy]=='u') dy = -dy;
+
+		Move(dx,dy);
+
+		return;
+	}
+
+	for(int i=0; i<size; i++)//mouse action: rrlluudd
 	{
 		if(actions[i] == GO_LEFT)//move left
 		{
