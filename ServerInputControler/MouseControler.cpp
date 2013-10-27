@@ -105,8 +105,6 @@ void MouseControler::HandleMouseEvent(char* actions, int size)
 
 		int dx = atoi(dxChar);
 		int dy = atoi(dyChar);
-		//AfxMessageBox(Utils::getWChar(dxChar));
-		//AfxMessageBox(Utils::getWChar(dyChar));
 
 		if(act[curDx]=='l') dx = -dx;
 		if(act[curDy]=='u') dy = -dy;

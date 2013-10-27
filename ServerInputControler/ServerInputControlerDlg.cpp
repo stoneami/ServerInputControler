@@ -162,16 +162,10 @@ HCURSOR CServerInputControlerDlg::OnQueryDragIcon()
 
 void CServerInputControlerDlg::OnBnClickedListen()
 {
-	
-	//char sText[100]= "abcdef";
-
-	//AfxMessageBox(Utils::getWChar(sText));
-	//AfxMessageBox(Utils::getWChar(1234));
-
 	// TODO: 在此添加控件通知处理程序代码
 	if(m_serverSocket.m_hSocket==INVALID_SOCKET)
 	{
-		
+		//Log::I(L"ServerInputControlerDlg", L"creating socket...");
 		BOOL bFlag=m_serverSocket.Create
 			(8888, SOCK_STREAM, FD_ACCEPT);
 		if(! bFlag)
@@ -182,6 +176,7 @@ void CServerInputControlerDlg::OnBnClickedListen()
 			return;
 		}
 	}
+	//Log::I(L"ServerInputControlerDlg", L"start listenning...");
 	//“侦听”成功，等待连接请求
 	if(!(m_serverSocket.Listen(1)))
 	{

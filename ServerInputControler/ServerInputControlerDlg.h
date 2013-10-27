@@ -6,6 +6,8 @@
 #include "afxcmn.h"
 #include "afxwin.h"
 
+#include "Log.h"
+
 // CServerInputControlerDlg ¶Ô»°¿ò
 class CServerInputControlerDlg : public CDialog
 {

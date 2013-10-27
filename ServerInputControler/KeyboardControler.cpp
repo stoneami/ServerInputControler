@@ -26,7 +26,9 @@ void KeyboardControler::SendKey(short key)
 short* KeyboardControler::GetKeyUnicodes(const char* utf8, const int size)
 {
 	ZeroMemory(mKeyUnicode, sizeof(short));
+
 	int cur=0;
+
 	for(int i=0;i<size && cur<MAX_KEYS;cur++)
 	{
 		if((utf8[i] & 0x80) == 0)//one byte

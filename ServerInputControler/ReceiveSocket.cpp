@@ -29,6 +29,8 @@ void CReceiveSocket::OnClose(int nErrorCode){}
 void CReceiveSocket::OnReceive(int nErrorCode)
 {
 	m_nLength = Receive(m_szBuffer,sizeof(m_szBuffer),0);
+
+	Log::I(L"ReceiveSocket", Utils::getWChar(m_szBuffer), m_nLength);
 	
 	if(m_nLength < 1) return;
 
@@ -48,24 +50,4 @@ void CReceiveSocket::OnReceive(int nErrorCode)
 	{
 		mMouseControler.HandleMouseEvent(m_szBuffer, m_nLength);
 	}
-
-	/*
-	if(m_szBuffer[0] != '#')//mouse action: move or click, like "rr","rrddllrr"
-	{
-		mMouseControler.HandleMouseEvent(m_szBuffer, m_nLength);
-	}
-	else
-	{
-		if(m_szBuffer[1] != '#')//set move step like "#10","#20"
-		{
-			MouseControler::SetStep(atoi(m_szBuffer + 1));
-		}
-		else// text message like "##aa", "##bb"
-		{
-			mKeyboardControler.SendMultiKey(m_szBuffer+2, m_nLength - 2);
-		}
-	}
-	*/
-	//AfxMessageBox(Utils::getWChar(m_nLength));
-	//AfxMessageBox(Utils::getWChar(atoi(m_szBuffer + 1)));//step
 }

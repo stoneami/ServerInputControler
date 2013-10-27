@@ -3,6 +3,8 @@
 
 #include "MouseControler.h"
 #include "KeyboardControler.h"
+#include "Log.h"
+#include "Utils.h"
 
 class CReceiveSocket :
 	public CAsyncSocket
@@ -20,9 +22,10 @@ protected:
 	void OnClose(int nErrorCode);
 
 public:
-	BOOL m_bConnected;    //是否连接
-	UINT m_nLength;        //消息长度
-	char m_szBuffer[4096];    //消息缓冲区
+	BOOL m_bConnected;
+	UINT m_nLength;
+	char m_szBuffer[4096];
+
 	MouseControler mMouseControler;
 	KeyboardControler mKeyboardControler;
 };
