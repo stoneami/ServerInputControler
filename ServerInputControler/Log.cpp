@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Log.h"
+#include <sys/timeb.h>
 
 Log::Log(void)
 {
@@ -16,8 +17,19 @@ void Log::PrintLog(char type,wchar_t* tag, wchar_t* buf, int bufLen)
 	for(int i=0,j=0; j<bufLen&&i<MAX_CHAR-10-1; i++,j++)
 		tmp[i] = buf[j];
 
+	//get date and time
+	CTime tm = CTime::GetCurrentTime();
+	CString str = tm.Format("%Y-%m-%d %X");
+
+	//get millisecond 
+	CString second;
+	struct _timeb timebuffer;    
+	_ftime(&timebuffer);
+	second.Format(L"%d",timebuffer.millitm);
+	int minSecond=_tstoi(second);
+
 	wchar_t msg[MAX_CHAR]={0};
-	swprintf_s(msg,L"%c/%s: %s%c", type, tag, tmp,'\n');
+	swprintf_s(msg,L"%s.%d %c/%s: %s%c",str,minSecond,type,tag,tmp,'\n');
 	OutputDebugString(msg);
 }
 

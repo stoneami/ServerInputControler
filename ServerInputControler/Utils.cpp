@@ -20,7 +20,8 @@ wchar_t* Utils::getWChar(char* text)
 
 wchar_t* Utils::getWChar(char* text, int len)
 {
-	wchar_t *pwText = new wchar_t[len];
+	wchar_t *pwText = new wchar_t[len+1];
+	pwText[len] = '\0';
 	MultiByteToWideChar (CP_ACP, 0, text, -1, pwText, len);
 
 	return pwText;
