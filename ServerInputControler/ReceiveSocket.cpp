@@ -30,7 +30,11 @@ void CReceiveSocket::OnReceive(int nErrorCode)
 {
 	m_nLength = Receive(m_szBuffer,sizeof(m_szBuffer),0);
 
-	Log::I(L"ReceiveSocket", Utils::getWChar(m_szBuffer), m_nLength);
+	m_szBuffer[m_nLength] = '\0';
+//	Log::I(L"ReceiveSocket", Utils::getWChar(m_szBuffer));
+//	Log::I(L"ReceiveSocket", Utils::getWChar(m_szBuffer), m_nLength);
+	Log::I("ReceiveSocket", m_szBuffer);
+//	Log::W("Jerry","hello log");
 	
 	if(m_nLength < 1) return;
 

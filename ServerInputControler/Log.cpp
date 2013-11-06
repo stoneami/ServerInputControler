@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Log.h"
+#include "Utils.h"
 #include <sys/timeb.h>
 
 Log::Log(void)
@@ -35,10 +36,10 @@ void Log::PrintLog(char type,wchar_t* tag, wchar_t* buf, int bufLen)
 
 void Log::W(wchar_t* tag, wchar_t* msg, int msgLen)
 {
-	PrintLog('W', tag, msg,msgLen);
+	PrintLog('W',tag,msg,msgLen);
 }
 
-void Log::E(wchar_t* tag, wchar_t* msg, int msgLen)
+void Log::E(wchar_t* tag,wchar_t* msg,int msgLen)
 {
 	PrintLog('E', tag, msg,msgLen);
 }
@@ -46,4 +47,46 @@ void Log::E(wchar_t* tag, wchar_t* msg, int msgLen)
 void Log::I(wchar_t* tag, wchar_t* msg, int msgLen)
 {
 	PrintLog('I', tag, msg, msgLen);
+}
+
+//msg must be ended by '\0'
+void Log::W(wchar_t* tag, wchar_t* msg)
+{
+	int len = wcslen(msg);
+	W(tag, msg, len);
+}
+
+//msg must be ended by '\0'
+void Log::E(wchar_t* tag, wchar_t* msg)
+{
+	int len = wcslen(msg);
+	E(tag, msg, len);
+}
+
+//msg must be ended by '\0'
+void Log::I(wchar_t* tag, wchar_t* msg)
+{
+	int len = wcslen(msg);
+	I(tag, msg, len);
+}
+
+//msg must be ended by '\0'
+void Log::W(char* tag, char* msg)
+{
+	int len = strlen(msg);
+	W(Utils::getWChar(tag),Utils::getWChar(msg),len);
+}
+
+//msg must be ended by '\0'
+void Log::E(char* tag, char* msg)
+{
+	int len = strlen(msg);
+	E(Utils::getWChar(tag),Utils::getWChar(msg),len);
+}
+
+//msg must be ended by '\0'
+void Log::I(char* tag, char* msg)
+{
+	int len = strlen(msg);
+	I(Utils::getWChar(tag),Utils::getWChar(msg),len);
 }
