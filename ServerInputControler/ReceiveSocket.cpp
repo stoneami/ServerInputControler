@@ -9,33 +9,99 @@ CReceiveSocket::~CReceiveSocket(void)
 {
 }
 
-void CReceiveSocket::OnSend(int nErrorCode){}
+void CReceiveSocket::OnSend(int nErrorCode)
+{
+	CAsyncSocket::OnSend(nErrorCode);
+}
 
-void CReceiveSocket::OnOutOfBandData(int nErrorCode){}
+void CReceiveSocket::OnOutOfBandData(int nErrorCode)
+{
+	CAsyncSocket::OnOutOfBandData(nErrorCode);
+}
 
-void CReceiveSocket::OnAccept(int nErrorCode){}
+void CReceiveSocket::OnAccept(int nErrorCode)
+{
+	CAsyncSocket::OnAccept(nErrorCode);
+}
 
-void CReceiveSocket::OnConnect(int nErrorCode){}
+void CReceiveSocket::OnConnect(int nErrorCode)
+{
+	CAsyncSocket::OnConnect(nErrorCode);
+}
 
-void CReceiveSocket::OnClose(int nErrorCode){}
+void CReceiveSocket::OnClose(int nErrorCode)
+{
+	CAsyncSocket::OnClose(nErrorCode);
+}
 
+int CReceiveSocket::GetMessageType(char* msg, int msgLen)
+{
+	if(NULL == msg || msgLen < 1) return MSG_UNKNOW;
+
+	if(msg[0] != '#')
+	{
+		return MSG_MOUSE_ACTION;
+	}
+	//mouse moving, it's like "###r20u52", "###l2d100"
+	else if(msgLen>3 && msg[0]=='#' && msg[1]=='#' && msg[2]=='#')
+	{
+		return MSG_MOUSE_MOVE;
+	}
+	// text message like "##aa", "##bb"
+	else if(msgLen>2 && msg[0]=='#' && msg[1]=='#')
+	{
+		return MSG_PLAIN_TEXT;
+	}
+	//set move accuracy like "#10","#20"
+	else if(msgLen>1 && msg[0]=='#')
+	{
+		return MSG_MOUSE_ACCURACY;
+	}
+	//mouse action: move or click, like "rr","rrddllrr"
+	else
+	{
+		return MSG_UNKNOW;
+	}
+}
+
+BOOL CReceiveSocket::HandlerMessage(char* msg, int msgLen)
+{
+	//char log[200];
+	//sprintf(log,"%s: msg=%s, len=%d","HandlerMessage()",msg,msgLen);
+	Log::I("ReceiveSocket", msg);
+
+	int msgType = GetMessageType(msg, msgLen);
+
+	switch(msgType)
+	{
+	case MSG_MOUSE_ACTION:
+		mMouseControler.HandleMouseEvent(msg, msgLen);
+		return true;
+	case MSG_PLAIN_TEXT:
+		mKeyboardControler.SendMultiKey(msg+2, msgLen-2);
+		return true;
+	case MSG_MOUSE_MOVE:
+		mMouseControler.HandleMouseEvent(msg, msgLen);
+		return true;
+	case MSG_MOUSE_ACCURACY:
+		MouseControler::SetStep(atoi(msg + 1));
+		return true;
+	default:
+		Log::E("ReceiveSocket", "Unknown Message !");
+		return false;
+	}
+}
 
 //Handle message from client.
-//There there types of message:
-//1.mouse action, it's like "r", "u" etc.
-//2.set move step, it's like "#10","#20".
-//3.text, it's like "##abcdefg","##hello".
-//4.mouse moving, it's like "###r20u52", "###l2d100"
 void CReceiveSocket::OnReceive(int nErrorCode)
 {
 	m_nLength = Receive(m_szBuffer,sizeof(m_szBuffer),0);
 
 	m_szBuffer[m_nLength] = '\0';
-//	Log::I(L"ReceiveSocket", Utils::getWChar(m_szBuffer));
-//	Log::I(L"ReceiveSocket", Utils::getWChar(m_szBuffer), m_nLength);
-	Log::I("ReceiveSocket", m_szBuffer);
-//	Log::W("Jerry","hello log");
+
+	HandlerMessage(m_szBuffer, m_nLength);
 	
+	/*
 	if(m_nLength < 1) return;
 
 	if(m_nLength>3 && m_szBuffer[0]=='#' && m_szBuffer[1]=='#' && m_szBuffer[2]=='#')//mouse moving, it's like "###r20u52", "###l2d100"
@@ -54,4 +120,5 @@ void CReceiveSocket::OnReceive(int nErrorCode)
 	{
 		mMouseControler.HandleMouseEvent(m_szBuffer, m_nLength);
 	}
+	*/
 }
